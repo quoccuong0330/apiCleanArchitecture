@@ -17,3 +17,4 @@
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Infrastructure/obj/Debug/net9.0/SchoolApi.Infrastructure.pdb
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Infrastructure/obj/Debug/net9.0/SchoolApi.Infrastructure.genruntimeconfig.cache
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Infrastructure/obj/Debug/net9.0/ref/SchoolApi.Infrastructure.dll
+/Users/macos/Documents/c#/SchoolApi/SchoolApi.Infrastructure/obj/Debug/net9.0/SchoolApi.Infrastructure.sourcelink.json

@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SchoolApi.Application.Services;
+using SchoolApi.Domain.InterfaceRepositories;
 using SchoolApi.Infrastructure.Data;
 using SchoolApi.Infrastructure.Interfaces;
 using SchoolApi.Infrastructure.Repositories;
+using SchoolApi.Infrastructure.Security;
 
 
 namespace SchoolApi.Infrastructure
@@ -23,6 +26,9 @@ namespace SchoolApi.Infrastructure
             });
 
             services.AddScoped<IClassRepository, ClassRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPointRepository, PointRepository>();
+            services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             return services;
         }
     }

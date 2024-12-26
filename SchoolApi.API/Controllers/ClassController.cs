@@ -13,54 +13,38 @@ namespace SchoolApi.API.Controllers;
 [Route("/api/[controller]")]
 [ApiController]
 public class ClassController(ISender sender) : ControllerBase{
-    [HttpPost("")]
+    
+    [HttpPost("create-class")]
     public async Task<IActionResult> AddClassAsync([FromBody] CreateClassDto classDto) {
-        try {
-            var classEntity = classDto.ToEntity();
-            var result = await sender.Send(new AddClassCommand(classEntity));
-            return Ok(result.ToResponseDto());
-        }catch (ValidationException ex) {
-             return BadRequest(new { ex.Message });
-        }
+        var classEntity = classDto.ToEntity();
+        var result = await sender.Send(new AddClassCommand(classEntity));
+        return result.IsSuccess ? Ok(result.Data.ToResponseDto()) : BadRequest(result.Message);
     }
     
     [HttpGet("get-all-class")]
     public async Task<IActionResult> GetAllClassAsync() {
         var result = await sender.Send(new GetAllClassQuery());
-        return Ok(result);
+        List<ClassResponseDto> covertDto = [];
+        covertDto.AddRange(result.Select(classEntity => classEntity.ToResponseDto()));
+        return Ok(covertDto);
     }
     
     [HttpGet("get-class/{classId}")]
     public async Task<IActionResult> GetAllClassAsync([FromRoute] Guid classId) {
-        try {
-            var result = await sender.Send(new GetClassByIdQuery(classId));
-            return Ok(result.ToResponseDto());
-        }
-        catch (NotFoundException ex) {
-            return NotFound(new { ex.Message });
-        }
+        var result = await sender.Send(new GetClassByIdQuery(classId));
+        return result.IsSuccess ? Ok(result.Data.ToResponseDto()) : NotFound();
     }
     
     [HttpPut("update-class/{classId}")]
     public async Task<IActionResult> UpdateClassAsync([FromRoute] Guid classId, [FromBody] UpdateClassDto updateClassDto) {
-        try {
-            var classEntity = updateClassDto.ToEntity();
-            var result = await sender.Send(new UpdateClassCommand(classId, classEntity));
-            return  Ok(result.ToResponseDto());
-        }
-        catch (NotFoundException ex) {
-            return NotFound(new { ex.Message });
-        }
+        var classEntity = updateClassDto.ToEntity();
+        var result = await sender.Send(new UpdateClassCommand(classId, classEntity));
+        return result.IsSuccess ? Ok(result.Data.ToResponseDto()) : NotFound();
     }
     
     [HttpDelete("delete-class/{classId}")]
-        public async Task<IActionResult> DeleteClassAsync([FromRoute] Guid classId) {
-            try {
-                var result = await sender.Send(new DeleteClassCommand(classId));
-                return Ok(result);
-            }
-            catch (NotFoundException ex) {
-                return NotFound(new { ex.Message });
-            }
+    public async Task<IActionResult> DeleteClassAsync([FromRoute] Guid classId) {
+        var result = await sender.Send(new DeleteClassCommand(classId));
+        return result.IsSuccess ? Ok(result.IsSuccess) : BadRequest(result.IsSuccess);
     }
 }

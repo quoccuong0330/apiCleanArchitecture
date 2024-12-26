@@ -61,12 +61,16 @@ namespace SchoolApi.Infrastructure.Migrations
                     b.Property<double>("Physical")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("StudentId")
+                    b.Property<Guid?>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EditorId");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique()
+                        .HasFilter("[StudentId] IS NOT NULL");
 
                     b.ToTable("Point");
                 });
@@ -128,11 +132,20 @@ namespace SchoolApi.Infrastructure.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.HasIndex("TableId")
-                        .IsUnique()
-                        .HasFilter("[TableId] IS NOT NULL");
-
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4506ad79-ec6d-4b58-81a9-c0201d3d74ac"),
+                            Address = "",
+                            Email = "admin@example.com",
+                            Name = "",
+                            Password = "$2a$11$VczTpjwDX/NX4CTbwRjrRuVHVOFHJLXShq5wKaT73e7WP127hfiUS",
+                            Phone = "",
+                            Role = "admin",
+                            YearOfBirth = 0
+                        });
                 });
 
             modelBuilder.Entity("SchoolApi.Domain.Entities.ClassEntity", b =>
@@ -152,7 +165,14 @@ namespace SchoolApi.Infrastructure.Migrations
                         .HasForeignKey("EditorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("SchoolApi.Domain.Entities.UserEntity", "Student")
+                        .WithOne("TablePoint")
+                        .HasForeignKey("SchoolApi.Domain.Entities.PointEntity", "StudentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Editor");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SchoolApi.Domain.Entities.UserEntity", b =>
@@ -162,13 +182,7 @@ namespace SchoolApi.Infrastructure.Migrations
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("SchoolApi.Domain.Entities.PointEntity", "TablePoint")
-                        .WithOne("Student")
-                        .HasForeignKey("SchoolApi.Domain.Entities.UserEntity", "TableId");
-
                     b.Navigation("Class");
-
-                    b.Navigation("TablePoint");
                 });
 
             modelBuilder.Entity("SchoolApi.Domain.Entities.ClassEntity", b =>
@@ -176,9 +190,9 @@ namespace SchoolApi.Infrastructure.Migrations
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("SchoolApi.Domain.Entities.PointEntity", b =>
+            modelBuilder.Entity("SchoolApi.Domain.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Student")
+                    b.Navigation("TablePoint")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -13,7 +13,7 @@ public class PointEntity {
     public double Average => (Math + Chemistry + Physical) / 3;  
 
     [ForeignKey("User")]
-    public Guid StudentId { get; set; }
+    public Guid? StudentId { get; set; }
     [InverseProperty("TablePoint")]
     public UserEntity Student { get; set; }
 

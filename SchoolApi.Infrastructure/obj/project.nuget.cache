@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "dSuNncDLuqE=",
+  "dgSpecHash": "dMjtLj7NKn4=",
   "success": true,
   "projectFilePath": "/Users/macos/Documents/c#/SchoolApi/SchoolApi.Infrastructure/SchoolApi.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/Users/macos/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/macos/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
+    "/Users/macos/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/macos/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/macos/.nuget/packages/mediatr/12.4.1/mediatr.12.4.1.nupkg.sha512",
     "/Users/macos/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",

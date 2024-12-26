@@ -12,3 +12,4 @@
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Domain/obj/Debug/net9.0/SchoolApi.Domain.pdb
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Domain/obj/Debug/net9.0/SchoolApi.Domain.genruntimeconfig.cache
 /Users/macos/Documents/c#/SchoolApi/SchoolApi.Domain/obj/Debug/net9.0/ref/SchoolApi.Domain.dll
+/Users/macos/Documents/c#/SchoolApi/SchoolApi.Domain/obj/Debug/net9.0/SchoolApi.Domain.sourcelink.json

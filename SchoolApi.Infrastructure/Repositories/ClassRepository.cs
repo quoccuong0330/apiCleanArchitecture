@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SchoolApi.Application.Exceptions;
+using SchoolApi.Application.ResponseObject;
 using SchoolApi.Domain.Entities;
 using SchoolApi.Infrastructure.Data;
 using SchoolApi.Infrastructure.Interfaces;
@@ -14,36 +14,54 @@ public class ClassRepository: IClassRepository {
     }
     
     public async Task<IEnumerable<ClassEntity>> GetAllClassAsync() {
-        return await _context.Class.ToListAsync();
+        var list = await _context.Class
+            .Include(x=>x.Students)
+            .Include(x=>x.Lead)
+            .ToListAsync();
+        return list;
     }
 
-    public async Task<ClassEntity> GetClassByIdAsync(Guid id) {
-        var modelClass = await _context.Class.FirstOrDefaultAsync(c=>c.Id == id);
-        if (modelClass is null) throw new NotFoundException("Class",id);
-        return modelClass;
+    public async Task<Result<ClassEntity>> GetClassByIdAsync(Guid id) {
+        var modelClass = await _context.Class
+            .Include(x=>x.Students)
+            .Include(x=>x.Lead)
+            .FirstOrDefaultAsync(c=>c.Id == id);
+        if (modelClass is null) return Result<ClassEntity>.Failure("Not found");
+        return Result<ClassEntity>.Success(modelClass);
     }
 
-    public async Task<ClassEntity> CreateClassAsync(ClassEntity classEntity) {
-         classEntity.Id = Guid.NewGuid();
-         var classModel =_context.AddAsync(classEntity);
+    public async Task<Result<ClassEntity>> CreateClassAsync(ClassEntity classEntity) {
+        var checkName = await _context.Class.AnyAsync(c=>c.Name.ToLower().Equals(classEntity.Name.ToLower()));
+        if (checkName) return Result<ClassEntity>.Failure("Name has already exists");
+         var modelClass = await _context.AddAsync(classEntity);
          await _context.SaveChangesAsync();
-         return classEntity;
+         var model = await _context.Class.FirstOrDefaultAsync(x => x.Id.Equals(classEntity.Id));
+
+         return model is not null ? Result<ClassEntity>.Success(model) :              
+             Result<ClassEntity>.Failure("Failed to create class or retrieve it.");
     }
 
-    public async Task<ClassEntity> UpdateClassAsync(Guid id, ClassEntity? classEntity) {
-       var classModel = await _context.Class.FirstOrDefaultAsync(c=>c.Id == id);
-       if (classModel is null)  throw new NotFoundException("Update Class",id);;
+    public async Task<Result<ClassEntity>> UpdateClassAsync(Guid id, ClassEntity? classEntity) {
+        var checkName = await _context.Class.AnyAsync(c=>c.Name.ToLower().Equals(classEntity.Name.ToLower()));
+        if (checkName) return Result<ClassEntity>.Failure("Name has already exists");
+       var classModel = await _context.Class
+           .Include(x=>x.Lead)
+           .Include(x=>x.Students)
+           .FirstOrDefaultAsync(c=>c.Id == id);
+       if (classModel is null) return Result<ClassEntity>.Failure($"Not found class with {id}");
+       
        classModel.Name = classEntity!.Name;
        await _context.SaveChangesAsync();
-       return classEntity;
+       return Result<ClassEntity>.Success(classModel);
     }
+   
 
-    public async Task<bool> DeleteClassByIdAsync(Guid id) {
+    public async Task<Result<ClassEntity>> DeleteClassByIdAsync(Guid id) {
         var classModel = await _context.Class.FirstOrDefaultAsync(c=>c.Id == id);
-        if (classModel is null)  throw new NotFoundException("Delete Class",id);
-
+        if (classModel is null) return Result<ClassEntity>.Failure($"Not found class with {id}");;;
+        
         _context.Remove(classModel);
         await _context.SaveChangesAsync();
-        return true;
+        return Result<ClassEntity>.Success(classModel);
     }
 }

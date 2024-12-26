@@ -28,7 +28,7 @@ public static class ClassMappingExtensions {
             Id = entity.Id,
             ClassName = entity.Name,
             TeacherName = entity.Lead?.Name,
-            Students = entity.Students,
+            Students = new List<UserResponseDto>(entity.Students.Where(x=>x.Role.Equals("student")).Select(x=>x.toResponseDto())),
             StudentCount = entity.StudentCount,
         };
     }
